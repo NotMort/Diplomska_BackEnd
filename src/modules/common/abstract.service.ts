@@ -14,7 +14,7 @@ export abstract class AbstractService {
       throw new InternalServerErrorException('Somthing went wrong while searching for a list of elements')
     }
   }
-  async findBy(condition, relations = []): Promise<any[]> {
+  async findBy(condition, relations = []): Promise<any> {
     try {
       return this.repository.findOne({
         where: condition,
