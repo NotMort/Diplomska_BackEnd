@@ -1,7 +1,9 @@
 import { Controller, Get, Post, Patch, Delete, Param, Body, HttpCode, HttpStatus } from '@nestjs/common'
 import { DownloadService } from './download.service'
 import { Download } from 'entities/download.entity'
-
+import { ApiTags } from '@nestjs/swagger'
+import { CreateDownloadDto } from './dto/create-download.dto'
+@ApiTags('downloads')
 @Controller('downloads')
 export class DownloadsController {
   constructor(private readonly downloadService: DownloadService) {}
@@ -20,7 +22,7 @@ export class DownloadsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createdownloadDto): Promise<Download> {
+  async create(@Body() createdownloadDto: CreateDownloadDto): Promise<Download> {
     return this.downloadService.create(createdownloadDto)
   }
 

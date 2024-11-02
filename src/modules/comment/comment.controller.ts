@@ -2,7 +2,8 @@ import { Controller, Get, Post, Patch, Delete, Param, Body, HttpCode, HttpStatus
 import { CommentService } from './comment.service'
 import { Comment } from 'entities/comment.entity'
 import { CreateCommentDto } from './dto/create-comment.dto'
-
+import { ApiTags } from '@nestjs/swagger'
+@ApiTags('comments')
 @Controller('comments')
 export class CommentsController {
   constructor(private readonly commentService: CommentService) {}
@@ -21,7 +22,7 @@ export class CommentsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() CreateCommentDto): Promise<Comment> {
+  async create(@Body() CreateCommentDto: CreateCommentDto): Promise<Comment> {
     return this.commentService.create(CreateCommentDto)
   }
 

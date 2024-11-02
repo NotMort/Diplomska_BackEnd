@@ -1,7 +1,10 @@
 import { Controller, Get, Post, Patch, Delete, Param, Body, HttpCode, HttpStatus } from '@nestjs/common'
 import { ArtworkService } from './artwork.service'
 import { Artwork, CategoryType } from 'entities/artwork.entity'
-
+import { ApiTags } from '@nestjs/swagger'
+import { CreateArtworkDto } from './dto/create-artwork.dto'
+import { UpdateArtworkDto } from './dto/update-artwork.dto'
+@ApiTags('artworks')
 @Controller('artworks')
 export class ArtworksController {
   constructor(private readonly artworkService: ArtworkService) {}
@@ -20,13 +23,13 @@ export class ArtworksController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createArtworkDto): Promise<Artwork> {
+  async create(@Body() createArtworkDto: CreateArtworkDto): Promise<Artwork> {
     return this.artworkService.create(createArtworkDto)
   }
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: string, @Body() updateArtworkDto): Promise<Artwork> {
+  async update(@Param('id') id: string, @Body() updateArtworkDto: UpdateArtworkDto): Promise<Artwork> {
     return this.artworkService.update(id, updateArtworkDto)
   }
 

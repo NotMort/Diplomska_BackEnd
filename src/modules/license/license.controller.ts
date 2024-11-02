@@ -1,7 +1,10 @@
 import { Controller, Get, Post, Patch, Delete, Param, Body, HttpCode, HttpStatus } from '@nestjs/common'
 import { LicenseService } from './license.service'
 import { License, LicenseType } from 'entities/license.entity'
-
+import { ApiTags } from '@nestjs/swagger'
+import { CreateLicenseDto } from './dto/create-license.dto'
+import { UpdateLicenseDto } from './dto/update-license.dto'
+@ApiTags('licenses')
 @Controller('licenses')
 export class LicensesController {
   constructor(private readonly licenseService: LicenseService) {}
@@ -20,13 +23,13 @@ export class LicensesController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createLicenseDto): Promise<License> {
+  async create(@Body() createLicenseDto: CreateLicenseDto): Promise<License> {
     return this.licenseService.create(createLicenseDto)
   }
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: string, @Body() updateLicenseDto): Promise<License> {
+  async update(@Param('id') id: string, @Body() updateLicenseDto: UpdateLicenseDto): Promise<License> {
     return this.licenseService.update(id, updateLicenseDto)
   }
 

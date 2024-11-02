@@ -5,6 +5,10 @@ import { DatabaseModule } from './database/database.module'
 import { LoggerMiddleware } from 'middleware/logger.middleware'
 import { UserModule } from './users/user.module'
 import { AuthModule } from './auth/auth.module'
+import { LicenseModule } from './license/license.module'
+import { FavoriteModule } from './favorite/favorite.module'
+import { DownloadModule } from './download/download.module'
+import { ArtworkModule } from './artwork/artwork.module'
 
 @Module({
   imports: [
@@ -16,6 +20,11 @@ import { AuthModule } from './auth/auth.module'
     DatabaseModule,
     UserModule,
     AuthModule,
+    LicenseModule,
+    FavoriteModule,
+    DownloadModule,
+    ArtworkModule,
+    ConfigModule,
   ],
 
   controllers: [],
