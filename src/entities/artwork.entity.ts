@@ -6,6 +6,8 @@ import { Download } from './download.entity'
 import { Favorite } from './favorite.entity'
 import { Comment } from './comment.entity'
 
+export type CategoryType = '2D' | '3D' | 'photo' | 'audio' | 'video'
+
 @Entity()
 export class Artwork extends Base {
   @Column()
@@ -21,7 +23,7 @@ export class Artwork extends Base {
   image_path: string
 
   @Column({ type: 'enum', enum: ['2D', '3D', 'photo', 'audio', 'video'] })
-  category: '2D' | '3D' | 'photo' | 'audio' | 'video'
+  category: CategoryType
 
   @Column('simple-array')
   tags: string[]

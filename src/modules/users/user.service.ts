@@ -61,4 +61,8 @@ export class UserService extends AbstractService {
     const user = await this.findById(id)
     return this.update(user.id, { avatar })
   }
+
+  async findByEmail(email: string): Promise<User | undefined> {
+    return this.userRepository.findOne({ where: { email } })
+  }
 }

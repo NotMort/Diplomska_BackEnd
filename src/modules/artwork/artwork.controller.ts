@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Patch, Delete, Param, Body, HttpCode, HttpStatus } from '@nestjs/common'
 import { ArtworkService } from './artwork.service'
-import { Artwork } from 'entities/artwork.entity'
+import { Artwork, CategoryType } from 'entities/artwork.entity'
 
 @Controller('artworks')
 export class ArtworksController {
@@ -34,5 +34,17 @@ export class ArtworksController {
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string): Promise<Artwork> {
     return this.artworkService.remove(id)
+  }
+
+  @Get('category/:category')
+  @HttpCode(HttpStatus.OK)
+  async getByCategory(@Param('category') category: CategoryType): Promise<Artwork[]> {
+    return this.artworkService.findByCategory(category)
+  }
+
+  @Get('tag/:tag')
+  @HttpCode(HttpStatus.OK)
+  async getByTag(@Param('tag') tag: string): Promise<Artwork[]> {
+    return this.artworkService.findByTag(tag)
   }
 }

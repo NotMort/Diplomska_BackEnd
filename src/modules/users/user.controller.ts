@@ -72,4 +72,10 @@ export class UsersController {
   async remove(@Param('id') id: string): Promise<User> {
     return this.userService.remove(id)
   }
+
+  @Get('email/:email')
+  @HttpCode(HttpStatus.OK)
+  async findByEmail(@Param('email') email: string): Promise<User | undefined> {
+    return this.userService.findByEmail(email)
+  }
 }

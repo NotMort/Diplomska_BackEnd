@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Patch, Delete, Param, Body, HttpCode, HttpStatus } from '@nestjs/common'
 import { LicenseService } from './license.service'
-import { License } from 'entities/license.entity'
+import { License, LicenseType } from 'entities/license.entity'
 
 @Controller('licenses')
 export class LicensesController {
@@ -34,5 +34,10 @@ export class LicensesController {
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string): Promise<License> {
     return this.licenseService.remove(id)
+  }
+  @Get('type/:license_type')
+  @HttpCode(HttpStatus.OK)
+  async getByType(@Param('license_type') license_type: LicenseType): Promise<License[]> {
+    return this.licenseService.findByType(license_type)
   }
 }
