@@ -24,12 +24,6 @@ export class FavoritesController {
     return this.favoriteService.create(createfavoriteDto)
   }
 
-  @Patch(':id')
-  @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: string, @Body() updatefavoriteDto): Promise<Favorite> {
-    return this.favoriteService.update(id, updatefavoriteDto)
-  }
-
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string): Promise<Favorite> {

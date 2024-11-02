@@ -24,12 +24,6 @@ export class DownloadsController {
     return this.downloadService.create(createdownloadDto)
   }
 
-  @Patch(':id')
-  @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: string, @Body() updatedownloadDto): Promise<Download> {
-    return this.downloadService.update(id, updatedownloadDto)
-  }
-
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string): Promise<Download> {

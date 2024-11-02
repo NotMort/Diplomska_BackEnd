@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Patch, Delete, Param, Body, HttpCode, HttpStatus } from '@nestjs/common'
 import { CommentService } from './comment.service'
 import { Comment } from 'entities/comment.entity'
+import { CreateCommentDto } from './dto/create-comment.dto'
 
 @Controller('comments')
 export class CommentsController {
@@ -20,14 +21,8 @@ export class CommentsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createcommentDto): Promise<Comment> {
-    return this.commentService.create(createcommentDto)
-  }
-
-  @Patch(':id')
-  @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: string, @Body() updatecommentDto): Promise<Comment> {
-    return this.commentService.update(id, updatecommentDto)
+  async create(@Body() CreateCommentDto): Promise<Comment> {
+    return this.commentService.create(CreateCommentDto)
   }
 
   @Delete(':id')
