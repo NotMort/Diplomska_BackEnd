@@ -9,6 +9,7 @@ import { compareHash, hash } from 'utils/bcrypt'
 import { RegisterUserDto } from './dto/register-user.dto'
 import { UserService } from 'modules/users/user.service'
 import { User } from 'entities/user.entity'
+import { Artwork } from 'entities/artwork.entity'
 
 @Injectable()
 export class AuthService {
@@ -45,6 +46,15 @@ export class AuthService {
   async user(cookie: string): Promise<User> {
     const data = await this.jwtService.verifyAsync(cookie)
     return this.usersService.findById(data['id'])
+  }
+
+  async userArtwork(cookie: string): Promise<Artwork[]> {
+    const data = await this.jwtService.verifyAsync(cookie)
+    const user = await this.usersService.findById(data['sub'])
+    if (!user) {
+      throw new BadRequestException('User not found.')
+    }
+    return this.usersService.getUserArtworks(user.id)
   }
 
   async getUserId(request: Request): Promise<string> {

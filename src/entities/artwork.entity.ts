@@ -34,12 +34,12 @@ export class Artwork extends Base {
   @ManyToOne(() => License, (license) => license.artworks)
   license: License
 
-  @OneToMany(() => Download, (download) => download.artwork)
+  @OneToMany(() => Download, (download) => download.artwork, { cascade: true })
   downloads: Download[]
 
-  @OneToMany(() => Favorite, (favorite) => favorite.artwork)
+  @OneToMany(() => Favorite, (favorite) => favorite.artwork, { cascade: true })
   favorites: Favorite[]
 
-  @OneToMany(() => Comment, (comment) => comment.artwork)
+  @OneToMany(() => Comment, (comment) => comment.artwork, { cascade: true })
   comments: Comment[]
 }

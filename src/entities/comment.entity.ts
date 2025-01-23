@@ -8,9 +8,9 @@ export class Comment extends Base {
   @Column('text')
   comment_text: string
 
-  @ManyToOne(() => User, (user) => user.comments)
+  @ManyToOne(() => User, (user) => user.comments, { nullable: false, onDelete: 'CASCADE' })
   user: User
 
-  @ManyToOne(() => Artwork, (artwork) => artwork.comments)
+  @ManyToOne(() => Artwork, (artwork) => artwork.comments, { nullable: false, onDelete: 'CASCADE' })
   artwork: Artwork
 }

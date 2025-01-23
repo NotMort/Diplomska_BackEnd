@@ -6,10 +6,12 @@ export class CreateCommentDto {
   @IsUUID()
   @IsNotEmpty()
   user_id: string
+
   @ApiProperty({ required: true })
   @IsUUID()
   @IsNotEmpty()
   artwork_id: string
+
   @ApiProperty({ required: true })
   @IsString()
   @IsNotEmpty()

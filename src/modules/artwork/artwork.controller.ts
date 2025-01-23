@@ -4,17 +4,18 @@ import { Artwork, CategoryType } from 'entities/artwork.entity'
 import { ApiTags } from '@nestjs/swagger'
 import { CreateArtworkDto } from './dto/create-artwork.dto'
 import { UpdateArtworkDto } from './dto/update-artwork.dto'
+import { Public } from 'decorators/public.decorator'
 @ApiTags('artworks')
 @Controller('artworks')
 export class ArtworksController {
   constructor(private readonly artworkService: ArtworkService) {}
-
+  @Public()
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(): Promise<Artwork[]> {
     return this.artworkService.findAll([])
   }
-
+  @Public()
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id') id: string): Promise<Artwork> {

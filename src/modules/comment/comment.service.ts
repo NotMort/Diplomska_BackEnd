@@ -14,11 +14,29 @@ export class CommentService extends AbstractService {
 
   async create(createCommentDto: CreateCommentDto): Promise<Comment> {
     try {
-      const newComm = this.commentRepository.create({ ...createCommentDto })
-      return this.commentRepository.save(newComm)
+      const { user_id, artwork_id, comment_text } = createCommentDto
+
+      const newComment = this.commentRepository.create({
+        comment_text,
+        user: { id: user_id },
+        artwork: { id: artwork_id },
+      })
+
+      return this.commentRepository.save(newComment)
     } catch (error) {
       Logging.error(error)
-      throw new BadRequestException('somthing went wrong while creating user')
+      throw new BadRequestException('Something went wrong while creating the comment.')
+    }
+  }
+  async findByArtworkId(artworkId: string): Promise<Comment[]> {
+    try {
+      return this.commentRepository.find({
+        where: { artwork: { id: artworkId } },
+        relations: ['user'],
+      })
+    } catch (error) {
+      Logging.error(error)
+      throw new BadRequestException('Failed to fetch comments for the artwork.')
     }
   }
 }

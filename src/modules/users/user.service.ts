@@ -8,6 +8,7 @@ import Logging from 'library/Logging'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { compareHash, hash } from 'utils/bcrypt'
 import { PostgresErrorCode } from 'helpers/postgresErrorCode.enum'
+import { Artwork } from 'entities/artwork.entity'
 
 @Injectable()
 export class UserService extends AbstractService {
@@ -64,5 +65,15 @@ export class UserService extends AbstractService {
 
   async findByEmail(email: string): Promise<User | undefined> {
     return this.userRepository.findOne({ where: { email } })
+  }
+  async getUserArtworks(userId: string): Promise<Artwork[]> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['artworks'],
+    })
+    if (!user) {
+      throw new BadRequestException('User not found.')
+    }
+    return user.artworks
   }
 }

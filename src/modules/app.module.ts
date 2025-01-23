@@ -9,6 +9,7 @@ import { LicenseModule } from './license/license.module'
 import { FavoriteModule } from './favorite/favorite.module'
 import { DownloadModule } from './download/download.module'
 import { ArtworkModule } from './artwork/artwork.module'
+import { commentModule } from './comment/comment.module'
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ArtworkModule } from './artwork/artwork.module'
     DownloadModule,
     ArtworkModule,
     ConfigModule,
+    commentModule,
   ],
 
   controllers: [],

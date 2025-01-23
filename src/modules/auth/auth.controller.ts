@@ -20,6 +20,7 @@ import { AuthService } from './auth.service'
 import { RegisterUserDto } from './dto/register-user.dto'
 import { LocalAuthGuard } from './guards/local-auth.guard'
 import { ApiTags } from '@nestjs/swagger'
+import { Artwork } from 'entities/artwork.entity'
 @ApiTags('auth')
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -48,6 +49,12 @@ export class AuthController {
   async user(@Req() req: Request): Promise<User> {
     const cookie = req.cookies['access_token']
     return this.authService.user(cookie)
+  }
+  @Get('artworks')
+  @HttpCode(HttpStatus.OK)
+  async userArtwork(@Req() req: Request): Promise<Artwork[]> {
+    const cookie = req.cookies['access_token']
+    return this.authService.userArtwork(cookie)
   }
 
   @Post('signout')
