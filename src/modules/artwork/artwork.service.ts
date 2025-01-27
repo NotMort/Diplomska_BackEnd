@@ -5,6 +5,7 @@ import { Artwork, CategoryType } from 'entities/artwork.entity'
 import { AbstractService } from 'modules/common/abstract.service'
 import { UpdateArtworkDto } from './dto/update-artwork.dto'
 import { CreateArtworkDto } from './dto/create-artwork.dto'
+import { User } from 'entities/user.entity'
 
 @Injectable()
 export class ArtworkService extends AbstractService {
@@ -12,7 +13,16 @@ export class ArtworkService extends AbstractService {
     super(artworkRepository)
   }
   async create(createArtworkDto: CreateArtworkDto): Promise<Artwork> {
-    const artwork = this.artworkRepository.create(createArtworkDto)
+    const { user_id, ...artworkData } = createArtworkDto
+    const user = await this.artworkRepository.manager.findOne(User, { where: { id: user_id } })
+    if (!user) {
+      throw new BadRequestException('Invalid user ID')
+    }
+    const artwork = this.artworkRepository.create({
+      ...artworkData,
+      user,
+    })
+
     return this.artworkRepository.save(artwork)
   }
 

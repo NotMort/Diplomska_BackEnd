@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator'
+import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator'
 
 export class CreateArtworkDto {
   @ApiProperty({ required: true })
@@ -28,4 +28,8 @@ export class CreateArtworkDto {
   @ApiProperty({ required: true })
   @IsOptional()
   tags?: string[]
+  @ApiProperty({ required: true })
+  @IsUUID()
+  @IsNotEmpty()
+  user_id: string
 }
