@@ -56,7 +56,15 @@ export class AuthService {
     }
     return this.usersService.getUserArtworks(user.id)
   }
-
+  async userFavorites(cookie: string): Promise<{ artwork_id: string }[]> {
+    const data = await this.jwtService.verifyAsync(cookie)
+    const user = await this.usersService.findById(data['sub'])
+    if (!user) {
+      throw new BadRequestException('User not found.')
+    }
+    const favorites = await this.usersService.getUserFavorites(user.id)
+    return favorites.map((favorite) => ({ artwork_id: favorite.artwork.id }))
+  }
   async getUserId(request: Request): Promise<string> {
     const user = request.user as User
     return user.id

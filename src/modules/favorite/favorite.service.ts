@@ -30,4 +30,28 @@ export class FavoriteService extends AbstractService {
 
     return this.favoriteRepository.save(favorite)
   }
+
+  async deleteByUserAndArtwork(userId: string, artworkId: string): Promise<void> {
+    await this.favoriteRepository
+      .createQueryBuilder()
+      .delete()
+      .from(Favorite)
+      .where('userId = :userId', { userId })
+      .andWhere('artworkId = :artworkId', { artworkId })
+      .execute()
+  }
+  async checkIfFavorited(userId: string, artworkId: string): Promise<{ isFavorited: boolean }> {
+    try {
+      const favorite = await this.favoriteRepository.findOne({
+        where: {
+          user: { id: userId },
+          artwork: { id: artworkId },
+        },
+      })
+
+      return { isFavorited: !!favorite }
+    } catch (error) {
+      throw new InternalServerErrorException('Error checking favorite status.')
+    }
+  }
 }

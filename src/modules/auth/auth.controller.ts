@@ -56,7 +56,12 @@ export class AuthController {
     const cookie = req.cookies['access_token']
     return this.authService.userArtwork(cookie)
   }
-
+  @Get('favorites')
+  @HttpCode(HttpStatus.OK)
+  async userFavorites(@Req() req: Request): Promise<{ artwork_id: string }[]> {
+    const cookie = req.cookies['access_token']
+    return this.authService.userFavorites(cookie)
+  }
   @Post('signout')
   @HttpCode(HttpStatus.OK)
   signout(@Res({ passthrough: true }) res: Response) {

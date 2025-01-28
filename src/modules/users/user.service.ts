@@ -9,6 +9,7 @@ import { UpdateUserDto } from './dto/update-user.dto'
 import { compareHash, hash } from 'utils/bcrypt'
 import { PostgresErrorCode } from 'helpers/postgresErrorCode.enum'
 import { Artwork } from 'entities/artwork.entity'
+import { Favorite } from 'entities/favorite.entity'
 
 @Injectable()
 export class UserService extends AbstractService {
@@ -75,5 +76,15 @@ export class UserService extends AbstractService {
       throw new BadRequestException('User not found.')
     }
     return user.artworks
+  }
+  async getUserFavorites(userId: string): Promise<Favorite[]> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['favorites', 'favorites.artwork'],
+    })
+    if (!user) {
+      throw new BadRequestException('User not found.')
+    }
+    return user.favorites
   }
 }
