@@ -30,4 +30,12 @@ export class DownloadService extends AbstractService {
 
     return this.downloadRepository.save(download)
   }
+
+  async getDownloadCount(artworkId: string): Promise<{ count: number }> {
+    const artwork = await this.artworkRepository.findOne({ where: { id: artworkId } })
+    if (!artwork) throw new NotFoundException('Artwork not found')
+
+    const count = await this.downloadRepository.count({ where: { artwork: { id: artworkId } } })
+    return { count }
+  }
 }
