@@ -1,4 +1,4 @@
-import { ExecutionContext, Injectable } from '@nestjs/common'
+import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { JwtService } from '@nestjs/jwt'
 import { AuthGuard } from '@nestjs/passport'
@@ -18,9 +18,18 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     try {
       const access_token = request.cookies['access_token']
-      return !!this.jwtService.verify(access_token)
+      if (!access_token) {
+        throw new UnauthorizedException('No access token provided')
+      }
+
+      const decoded = this.jwtService.verify(access_token)
+      return !!decoded
     } catch (error) {
-      return false
+      if (error.name === 'TokenExpiredError') {
+        request.res.clearCookie('access_token')
+        throw new UnauthorizedException('Session expired. Please log in again.')
+      }
+      throw new UnauthorizedException('Invalid token')
     }
   }
 }
