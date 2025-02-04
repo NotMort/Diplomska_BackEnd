@@ -5,9 +5,9 @@ import { Artwork } from './artwork.entity'
 
 @Entity()
 export class Favorite extends Base {
-  @ManyToOne(() => User, (user) => user.favorites)
+  @ManyToOne(() => User, (user) => user.favorites, { nullable: false, onDelete: 'CASCADE' })
   user: User
 
-  @ManyToOne(() => Artwork, (artwork) => artwork.favorites)
+  @ManyToOne(() => Artwork, (artwork) => artwork.favorites, { nullable: false, onDelete: 'CASCADE' })
   artwork: Artwork
 }

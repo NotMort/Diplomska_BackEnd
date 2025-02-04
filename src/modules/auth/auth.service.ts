@@ -44,8 +44,13 @@ export class AuthService {
   }
 
   async user(cookie: string): Promise<User> {
-    const data = await this.jwtService.verifyAsync(cookie)
-    return this.usersService.findById(data['id'])
+    try {
+      const data = await this.jwtService.verifyAsync(cookie)
+      return this.usersService.findById(data['sub'])
+    } catch (error) {
+      console.error('JWT verification failed:', error.message)
+      throw new BadRequestException('Invalid or expired token.')
+    }
   }
 
   async userArtwork(cookie: string): Promise<Artwork[]> {
