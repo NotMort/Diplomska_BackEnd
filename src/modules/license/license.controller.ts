@@ -4,6 +4,7 @@ import { License, LicenseType } from 'entities/license.entity'
 import { ApiTags } from '@nestjs/swagger'
 import { CreateLicenseDto } from './dto/create-license.dto'
 import { UpdateLicenseDto } from './dto/update-license.dto'
+import { Artwork } from 'entities/artwork.entity'
 @ApiTags('licenses')
 @Controller('licenses')
 export class LicensesController {
@@ -42,5 +43,10 @@ export class LicensesController {
   @HttpCode(HttpStatus.OK)
   async getByType(@Param('license_type') license_type: LicenseType): Promise<License[]> {
     return this.licenseService.findByType(license_type)
+  }
+  @Get(':id/artworks')
+  @HttpCode(HttpStatus.OK)
+  async getArtworksByLicense(@Param('id') licenseId: string): Promise<Artwork[]> {
+    return this.licenseService.findArtworksByLicense(licenseId)
   }
 }

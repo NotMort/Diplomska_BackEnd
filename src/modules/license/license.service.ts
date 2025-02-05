@@ -5,6 +5,7 @@ import { License, LicenseType } from 'entities/license.entity'
 import { AbstractService } from 'modules/common/abstract.service'
 import { UpdateLicenseDto } from './dto/update-license.dto'
 import { CreateLicenseDto } from './dto/create-license.dto'
+import { Artwork } from 'entities/artwork.entity'
 
 @Injectable()
 export class LicenseService extends AbstractService {
@@ -24,5 +25,13 @@ export class LicenseService extends AbstractService {
 
   async findByType(license_type: LicenseType): Promise<License[]> {
     return this.licenseRepository.find({ where: { license_type } })
+  }
+  async findArtworksByLicense(licenseId: string): Promise<Artwork[]> {
+    return this.licenseRepository
+      .createQueryBuilder('license')
+      .leftJoinAndSelect('license.artworks', 'artwork')
+      .where('license.id = :licenseId', { licenseId })
+      .getMany()
+      .then((licenses) => (licenses.length > 0 ? licenses[0].artworks : []))
   }
 }

@@ -32,4 +32,9 @@ export class CreateArtworkDto {
   @IsUUID()
   @IsNotEmpty()
   user_id: string
+
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  license_id?: string
 }

@@ -22,6 +22,9 @@ export class Artwork extends Base {
   @Column()
   image_path: string
 
+  @Column({ nullable: true })
+  thumbnail_path: string
+
   @Column({ type: 'enum', enum: ['2D', '3D', 'photo', 'audio', 'video'] })
   category: CategoryType
 
@@ -31,7 +34,7 @@ export class Artwork extends Base {
   @ManyToOne(() => User, (user) => user.artworks)
   user: User
 
-  @ManyToOne(() => License, (license) => license.artworks)
+  @ManyToOne(() => License, (license) => license.artworks, { nullable: true, onDelete: 'SET NULL' })
   license: License
 
   @OneToMany(() => Download, (download) => download.artwork, { cascade: true })

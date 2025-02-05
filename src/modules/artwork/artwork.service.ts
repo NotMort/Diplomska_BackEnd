@@ -6,7 +6,7 @@ import { AbstractService } from 'modules/common/abstract.service'
 import { UpdateArtworkDto } from './dto/update-artwork.dto'
 import { CreateArtworkDto } from './dto/create-artwork.dto'
 import { User } from 'entities/user.entity'
-
+import { License } from 'entities/license.entity'
 @Injectable()
 export class ArtworkService extends AbstractService {
   constructor(@InjectRepository(Artwork) private readonly artworkRepository: Repository<Artwork>) {
@@ -29,6 +29,18 @@ export class ArtworkService extends AbstractService {
   async update(id: string, updateArtworkDto: UpdateArtworkDto): Promise<Artwork> {
     const artwork = await this.findById(id)
     Object.assign(artwork, updateArtworkDto)
+    return this.artworkRepository.save(artwork)
+  }
+  async updateLicense(artworkId: string, licenseId: string): Promise<Artwork> {
+    const artwork = await this.findById(artworkId)
+    if (!artwork) {
+      throw new BadRequestException(`Artwork with ID ${artworkId} does not exist.`)
+    }
+    const license = await this.artworkRepository.manager.findOne(License, { where: { id: licenseId } })
+    if (!license) {
+      throw new BadRequestException(`License with ID ${licenseId} does not exist.`)
+    }
+    artwork.license = license
     return this.artworkRepository.save(artwork)
   }
 

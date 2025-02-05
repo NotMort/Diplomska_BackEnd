@@ -33,6 +33,11 @@ export class ArtworksController {
   async update(@Param('id') id: string, @Body() updateArtworkDto: UpdateArtworkDto): Promise<Artwork> {
     return this.artworkService.update(id, updateArtworkDto)
   }
+  @Patch(':id/license')
+  @HttpCode(HttpStatus.OK)
+  async updateLicense(@Param('id') id: string, @Body('license_id') licenseId: string): Promise<Artwork> {
+    return this.artworkService.updateLicense(id, licenseId)
+  }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)

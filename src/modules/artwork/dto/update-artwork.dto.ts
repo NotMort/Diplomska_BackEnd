@@ -29,4 +29,8 @@ export class UpdateArtworkDto {
   @ApiProperty({ required: true })
   @IsOptional()
   tags?: string[]
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  license_id?: string
 }

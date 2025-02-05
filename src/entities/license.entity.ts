@@ -21,6 +21,6 @@ export class License extends Base {
   @Column({ default: true })
   attribution_required: boolean
 
-  @OneToMany(() => Artwork, (artwork) => artwork.license)
+  @OneToMany(() => Artwork, (artwork) => artwork.license, { nullable: false, onDelete: 'CASCADE' })
   artworks: Artwork[]
 }
