@@ -11,6 +11,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common'
@@ -20,9 +21,10 @@ import { User } from 'entities/user.entity'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { isFileExtensionSafe, removeFile, saveImageToStorage } from 'helpers/imageStorage'
-import { join } from 'path'
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiTags } from '@nestjs/swagger'
+import { saveImageToStorage } from 'helpers/imageStorage'
+
+import { ApiTags } from '@nestjs/swagger'
+
 @ApiTags('users')
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -53,18 +55,13 @@ export class UsersController {
   }
 
   @Patch('upload/:id')
-  @UseInterceptors(FileInterceptor('avatar', saveImageToStorage))
+  @UseInterceptors(FileInterceptor('avatar', saveImageToStorage('avatars')))
   @HttpCode(HttpStatus.CREATED)
-  async upload(@UploadedFile() file: Express.Multer.File, @Param('id') id: string): Promise<User> {
-    const filename = file?.filename
-    if (!filename) throw new BadRequestException('file must be valid')
-    const imageFolderPath = join(process.cwd(), 'file')
-    const fullFilePath = join(imageFolderPath + '/' + file.fieldname)
-    if (await isFileExtensionSafe(fullFilePath)) {
-      return this.userService.updateUserImageId(id, filename)
+  async upload(@UploadedFile() file: Express.Multer.File, @Param('id') id: string, @Req() req): Promise<User> {
+    if (!file) {
+      throw new BadRequestException('File must be valid')
     }
-    removeFile(fullFilePath)
-    throw new BadRequestException('Bad imga')
+    return this.userService.updateUserImageId(id, file.filename)
   }
 
   @Delete(':id')

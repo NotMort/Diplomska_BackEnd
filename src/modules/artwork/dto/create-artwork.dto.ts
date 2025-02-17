@@ -6,28 +6,35 @@ export class CreateArtworkDto {
   @IsString()
   @IsNotEmpty()
   title: string
+
   @ApiProperty({ required: true })
   @IsString()
   @IsNotEmpty()
   description: string
-  @ApiProperty({ required: true })
+
+  @ApiProperty({ required: false })
   @IsString()
-  @IsNotEmpty()
-  file_path: string
-  @ApiProperty({ required: true })
+  @IsOptional()
+  file_path?: string
+
+  @ApiProperty({ required: false })
   @IsString()
-  @IsNotEmpty()
-  image_path: string
-  @ApiProperty({ required: true })
+  @IsOptional()
+  image_path?: string
+
+  @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
   thumbnail_path?: string
+
   @ApiProperty({ required: true })
   @IsEnum(['2D', '3D', 'photo', 'audio', 'video'])
   category: '2D' | '3D' | 'photo' | 'audio' | 'video'
-  @ApiProperty({ required: true })
+
+  @ApiProperty({ required: false })
   @IsOptional()
   tags?: string[]
+
   @ApiProperty({ required: true })
   @IsUUID()
   @IsNotEmpty()

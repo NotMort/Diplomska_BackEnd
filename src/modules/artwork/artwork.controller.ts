@@ -1,10 +1,26 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, HttpCode, HttpStatus } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Param,
+  Body,
+  HttpCode,
+  HttpStatus,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
+} from '@nestjs/common'
 import { ArtworkService } from './artwork.service'
 import { Artwork, CategoryType } from 'entities/artwork.entity'
 import { ApiTags } from '@nestjs/swagger'
 import { CreateArtworkDto } from './dto/create-artwork.dto'
 import { UpdateArtworkDto } from './dto/update-artwork.dto'
 import { Public } from 'decorators/public.decorator'
+import { FileInterceptor } from '@nestjs/platform-express'
+import { saveFileToStorage, saveImageToStorage } from 'helpers/imageStorage'
+
 @ApiTags('artworks')
 @Controller('artworks')
 export class ArtworksController {
@@ -55,5 +71,28 @@ export class ArtworksController {
   @HttpCode(HttpStatus.OK)
   async getByTag(@Param('tag') tag: string): Promise<Artwork[]> {
     return this.artworkService.findByTag(tag)
+  }
+  @Patch('upload/thumbnail/:id')
+  @UseInterceptors(FileInterceptor('file', saveImageToStorage('thumbnails')))
+  @HttpCode(HttpStatus.CREATED)
+  async uploadThumbnail(@UploadedFile() file: Express.Multer.File, @Param('id') id: string) {
+    if (!file) throw new BadRequestException('Invalid file')
+    return this.artworkService.updateArtworkThumbnail(id, file.filename)
+  }
+
+  @Patch('upload/image/:id')
+  @UseInterceptors(FileInterceptor('file', saveImageToStorage('images')))
+  @HttpCode(HttpStatus.CREATED)
+  async uploadImage(@UploadedFile() file: Express.Multer.File, @Param('id') id: string) {
+    if (!file) throw new BadRequestException('Invalid file')
+    return this.artworkService.updateArtworkImage(id, file.filename)
+  }
+
+  @Patch('upload/file/:id')
+  @UseInterceptors(FileInterceptor('file', saveFileToStorage))
+  @HttpCode(HttpStatus.CREATED)
+  async uploadFile(@UploadedFile() file: Express.Multer.File, @Param('id') id: string) {
+    if (!file) throw new BadRequestException('Invalid file')
+    return this.artworkService.updateArtworkFile(id, file.filename)
   }
 }

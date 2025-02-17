@@ -1,18 +1,55 @@
-const FileType = import('file-type')
-import fs from 'fs'
-import Logging from 'library/Logging'
 import { diskStorage, Options } from 'multer'
 import { extname } from 'path'
+import fs from 'fs'
+import Logging from 'library/Logging'
+import { FileInterceptor } from '@nestjs/platform-express'
+import { CallHandler, ExecutionContext, NestInterceptor, mixin } from '@nestjs/common'
 
-type validFileExtensionsType = 'png' | 'jpg' | 'jpeg'
-type validMimeType = 'imge/png' | 'imge/jpg' | 'imge/jpeg'
+import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface'
 
-const validFileExtensions: validFileExtensionsType[] = ['png', 'jpg', 'jpeg']
-const validMimeTypes: validMimeType[] = ['imge/png', 'imge/jpg', 'imge/jpeg']
+const ensureDirectoryExists = (directory: string) => {
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory, { recursive: true })
+  }
+}
 
-export const saveImageToStorage: Options = {
+const imageExtensions = ['png', 'jpg', 'jpeg', 'gif']
+const fileExtensions = ['mp4', 'mp3', 'wav', 'pdf', 'obj', 'blend', 'fbx', 'gltf']
+
+export const saveImageToStorage = (folder: 'avatars' | 'images' | 'thumbnails'): Options => {
+  const destinationPath = `./files/${folder}`
+  ensureDirectoryExists(destinationPath)
+
+  return {
+    storage: diskStorage({
+      destination: destinationPath,
+      filename(req, file, callback) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
+        const ext = extname(file.originalname)
+        const filename = `${uniqueSuffix}${ext}`
+        callback(null, filename)
+      },
+    }),
+    fileFilter(req, file, callback) {
+      const fileExt = extname(file.originalname).replace('.', '').toLowerCase()
+      if (imageExtensions.includes(fileExt)) {
+        callback(null, true)
+      } else {
+        console.log('file tipe')
+        callback(null, false)
+      }
+    },
+  }
+}
+
+const allowedFileExtensions = ['png', 'jpg', 'jpeg', 'gif', 'mp4', 'mp3', 'wav', 'pdf', 'obj', 'blend', 'fbx', 'gltf']
+
+const destinationPath = './files/artwork_files'
+ensureDirectoryExists(destinationPath)
+
+export const saveFileToStorage: Options = {
   storage: diskStorage({
-    destination: './file',
+    destination: destinationPath,
     filename(req, file, callback) {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
       const ext = extname(file.originalname)
@@ -21,24 +58,24 @@ export const saveImageToStorage: Options = {
     },
   }),
   fileFilter(req, file, callback) {
-    const allowedMimeType: validMimeType[] = validMimeTypes
-    allowedMimeType.includes(file.mimetype as validMimeType) ? callback(null, true) : callback(null, false)
+    const fileExt = extname(file.originalname).replace('.', '').toLowerCase()
+    if (allowedFileExtensions.includes(fileExt)) {
+      callback(null, true)
+    } else {
+      console.log(`Invalid file type: ${fileExt}`)
+      callback(null, false)
+    }
   },
 }
 
-export const isFileExtensionSafe = async (fullFilePath: string): Promise<boolean> => {
-  return (await FileType).fileTypeFromFile(fullFilePath).then((fileExtensionAndMimeType) => {
-    if (!fileExtensionAndMimeType?.ext) return false
-    const isFileTypeLegit = validFileExtensions.includes(fileExtensionAndMimeType.ext as validFileExtensionsType)
-    const isMimeTypeLegit = validMimeTypes.includes(fileExtensionAndMimeType.mime as validMimeType)
-    const isFileLegit = isFileTypeLegit && isMimeTypeLegit
-    return isFileLegit
-  })
-}
-export const removeFile = (fullFIlePath: string): void => {
+export const removeFile = (fullFilePath: string): void => {
   try {
-    fs.unlinkSync(fullFIlePath)
+    if (fs.existsSync(fullFilePath)) {
+      fs.unlinkSync(fullFilePath)
+    } else {
+      Logging.warn(`File not found: ${fullFilePath}`)
+    }
   } catch (error) {
-    Logging.error(error)
+    Logging.error(`Failed to delete file: ${error.message}`)
   }
 }

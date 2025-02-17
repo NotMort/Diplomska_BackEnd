@@ -31,7 +31,7 @@ export class Artwork extends Base {
   @Column('simple-array')
   tags: string[]
 
-  @ManyToOne(() => User, (user) => user.artworks)
+  @ManyToOne(() => User, (user) => user.artworks, { nullable: false, onDelete: 'CASCADE' })
   user: User
 
   @ManyToOne(() => License, (license) => license.artworks, { nullable: true, onDelete: 'SET NULL' })

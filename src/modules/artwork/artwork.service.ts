@@ -54,4 +54,24 @@ export class ArtworkService extends AbstractService {
       .where('artwork.tags LIKE :tag', { tag: `%${tag}%` })
       .getMany()
   }
+  async updateArtworkThumbnail(id: string, filename: string): Promise<Artwork> {
+    const artwork = await this.findById(id)
+    if (!artwork) throw new BadRequestException('Artwork not found')
+    artwork.thumbnail_path = `files/thumbnails/${filename}`
+    return this.artworkRepository.save(artwork)
+  }
+
+  async updateArtworkImage(id: string, filename: string): Promise<Artwork> {
+    const artwork = await this.findById(id)
+    if (!artwork) throw new BadRequestException('Artwork not found')
+    artwork.image_path = `files/images/${filename}`
+    return this.artworkRepository.save(artwork)
+  }
+
+  async updateArtworkFile(id: string, filename: string): Promise<Artwork> {
+    const artwork = await this.findById(id)
+    if (!artwork) throw new BadRequestException('Artwork not found')
+    artwork.file_path = `files/artwork_files/${filename}`
+    return this.artworkRepository.save(artwork)
+  }
 }

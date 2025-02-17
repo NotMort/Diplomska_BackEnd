@@ -27,15 +27,15 @@ export class User extends Base {
   @Column({ type: 'enum', enum: ['artist', 'developer'], default: 'artist' })
   user_role: 'artist' | 'developer'
 
-  @OneToMany(() => Artwork, (artwork) => artwork.user)
+  @OneToMany(() => Artwork, (artwork) => artwork.user, { nullable: false, onDelete: 'CASCADE' })
   artworks: Artwork[]
 
-  @OneToMany(() => Download, (download) => download.user)
+  @OneToMany(() => Download, (download) => download.user, { nullable: false, onDelete: 'CASCADE' })
   downloads: Download[]
 
-  @OneToMany(() => Favorite, (favorite) => favorite.user)
+  @OneToMany(() => Favorite, (favorite) => favorite.user, { nullable: false, onDelete: 'CASCADE' })
   favorites: Favorite[]
 
-  @OneToMany(() => Comment, (comment) => comment.user)
+  @OneToMany(() => Comment, (comment) => comment.user, { nullable: false, onDelete: 'CASCADE' })
   comments: Comment[]
 }
