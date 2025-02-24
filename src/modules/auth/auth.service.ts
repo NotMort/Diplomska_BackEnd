@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 
 import { Request } from 'express'
-import Logging from 'library/Logging'
+import Logging from '../../library/logging'
 
 import { compareHash, hash } from 'utils/bcrypt'
 

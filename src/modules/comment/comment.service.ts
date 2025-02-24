@@ -4,7 +4,7 @@ import { Repository } from 'typeorm'
 import { Comment } from 'entities/comment.entity'
 import { AbstractService } from 'modules/common/abstract.service'
 import { CreateCommentDto } from './dto/create-comment.dto'
-import Logging from 'library/Logging'
+import Logging from '../../library/logging'
 
 @Injectable()
 export class CommentService extends AbstractService {

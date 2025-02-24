@@ -7,6 +7,8 @@ import { UpdateArtworkDto } from './dto/update-artwork.dto'
 import { CreateArtworkDto } from './dto/create-artwork.dto'
 import { User } from 'entities/user.entity'
 import { License } from 'entities/license.entity'
+import * as fs from 'fs'
+import { join } from 'path'
 @Injectable()
 export class ArtworkService extends AbstractService {
   constructor(@InjectRepository(Artwork) private readonly artworkRepository: Repository<Artwork>) {
@@ -30,6 +32,32 @@ export class ArtworkService extends AbstractService {
     const artwork = await this.findById(id)
     Object.assign(artwork, updateArtworkDto)
     return this.artworkRepository.save(artwork)
+  }
+  async remove(id: string): Promise<Artwork> {
+    const artwork = await this.findById(id)
+    if (!artwork) {
+      throw new BadRequestException('Artwork not found')
+    }
+
+    const filePaths = [
+      artwork.thumbnail_path ? join(__dirname, '../../', artwork.thumbnail_path) : null,
+      artwork.image_path ? join(__dirname, '../../', artwork.image_path) : null,
+      artwork.file_path ? join(__dirname, '../../', artwork.file_path) : null,
+    ]
+
+    filePaths.forEach((filePath) => {
+      if (filePath && fs.existsSync(filePath)) {
+        try {
+          fs.unlinkSync(filePath)
+          console.log(`Deleted file: ${filePath}`)
+        } catch (error) {
+          console.error(`Error deleting file: ${filePath}`, error)
+        }
+      }
+    })
+
+    await this.artworkRepository.delete(id)
+    return artwork
   }
   async updateLicense(artworkId: string, licenseId: string): Promise<Artwork> {
     const artwork = await this.findById(artworkId)
