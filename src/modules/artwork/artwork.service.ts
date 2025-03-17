@@ -27,6 +27,18 @@ export class ArtworkService extends AbstractService {
 
     return this.artworkRepository.save(artwork)
   }
+  async findAll(): Promise<Artwork[]> {
+    return this.artworkRepository
+      .createQueryBuilder('artwork')
+      .leftJoinAndSelect('artwork.license', 'license')
+      .getMany()
+  }
+  async findById(id: string): Promise<Artwork> {
+    return this.artworkRepository.findOne({
+      where: { id },
+      relations: ['license'],
+    })
+  }
 
   async update(id: string, updateArtworkDto: UpdateArtworkDto): Promise<Artwork> {
     const artwork = await this.findById(id)

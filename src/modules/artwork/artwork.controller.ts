@@ -29,7 +29,7 @@ export class ArtworksController {
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(): Promise<Artwork[]> {
-    return this.artworkService.findAll([])
+    return this.artworkService.findAll()
   }
   @Public()
   @Get(':id')
