@@ -5,6 +5,7 @@ import { ValidationPipe } from '@nestjs/common'
 import cookieParser from 'cookie-parser'
 import express from 'express'
 import Logging from 'library/logging'
+import * as path from 'path'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -16,7 +17,7 @@ async function bootstrap() {
   })
   app.useGlobalPipes(new ValidationPipe())
   app.use(cookieParser())
-  app.use('/files', express.static('files'))
+  app.use('/files', express.static(path.join(__dirname, '..', 'files')))
   //swager
   const config = new DocumentBuilder()
     .setTitle('Backend Diplomska')

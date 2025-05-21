@@ -11,6 +11,8 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  NotFoundException,
+  Res,
 } from '@nestjs/common'
 import { ArtworkService } from './artwork.service'
 import { Artwork, CategoryType } from 'entities/artwork.entity'
@@ -20,7 +22,9 @@ import { UpdateArtworkDto } from './dto/update-artwork.dto'
 import { Public } from 'decorators/public.decorator'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { saveFileToStorage, saveImageToStorage } from 'helpers/imageStorage'
-
+import * as path from 'path'
+import * as fs from 'fs'
+import { Response } from 'express'
 @ApiTags('artworks')
 @Controller('artworks')
 export class ArtworksController {
@@ -94,5 +98,15 @@ export class ArtworksController {
   async uploadFile(@UploadedFile() file: Express.Multer.File, @Param('id') id: string) {
     if (!file) throw new BadRequestException('Invalid file')
     return this.artworkService.updateArtworkFile(id, file.filename)
+  }
+
+  @Get('download/:filename')
+  downloadFile(@Param('filename') filename: string, @Res() res: Response) {
+    const filePath = path.join(process.cwd(), 'files', 'artwork_files', filename)
+    if (!fs.existsSync(filePath)) {
+      throw new NotFoundException('File not found')
+    }
+
+    return res.download(filePath, filename)
   }
 }
